@@ -1,8 +1,9 @@
 /// <reference types="Cypress" />
+
 // Test suite for E2E e-commerce workflow
 describe('End to End e-commerceTest', () => {
 
-  // Single test case: Submit an order
+  // Single test case: Login, add product, checkout, and validate order success
   it('Submit Order', () => {
 
     // Product to add to cart
@@ -32,8 +33,37 @@ describe('End to End e-commerceTest', () => {
       .then($element => {
         
         // Step 8: Inside the matched product card, find and click the "Add" button
-        // (fixed syntax: use contains() instead of should())
         cy.wrap($element).contains('button', 'Add').click()
       })
+
+    // Step 9: Click the "Checkout" link to go to cart page
+    cy.contains('a', 'Checkout').click()
+
+    // Step 10: Initialize a sum variable to verify total later
+    let sum = 0
+
+    // Step 11: Loop through each product price in the cart
+    cy.get('tr td:nth-child(4) strong').each($e1 => {
+      const amount = Number($e1.text().split(" ")[1].trim()) // Extract numeric value
+      sum = sum + amount
+    }).then(() => {
+      // Step 12: Validate that total cart amount is reasonable (< 200000 for this test)
+      expect(sum).to.be.lessThan(200000)
+    })
+
+    // Step 13: Proceed to final checkout
+    cy.contains('button', 'Checkout').click()
+
+    // Step 14: Enter shipping country
+    cy.get("#country").type("India")
+
+    // Step 15: Select the first suggested country option
+    cy.get(".suggestions ul li a").click()
+
+    // Step 16: Click the confirm order button
+    cy.get(".btn-success").click()
+
+    // Step 17: Verify success message is displayed after order placement
+    cy.get(".alert-success").should('contain', 'Success')
   })
 })
