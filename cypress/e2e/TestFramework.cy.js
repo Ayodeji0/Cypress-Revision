@@ -1,22 +1,30 @@
 /// <reference types="Cypress" />
 
 // Test suite for E2E e-commerce workflow
-describe('End to End e-commerceTest', () => {
+describe('End to End e-commerceTest', function () {
+
+  // Hook: runs once before all tests in this suite
+  before(function () {
+    // Load test data from fixtures/example.json
+    cy.fixture('example').then((data) => {
+      this.data = data   // Assign to Mocha's context
+    })
+  })
 
   // Single test case: Login, add product, checkout, and validate order success
-  it('Submit Order', () => {
+  it('Submit Order', function () {
 
-    // Product to add to cart
-    const productName = "Nokia Edge"
+    // Product to add to cart (from fixture)
+    const productName = this.data.productName
 
     // Step 1: Visit the login page
     cy.visit("https://rahulshettyacademy.com/loginpagePractise/#") 
 
-    // Step 2: Enter username
-    cy.get("#username").type("ayodeji")
+    // Step 2: Enter username (from fixture)
+    cy.get("#username").type(this.data.username)
 
-    // Step 3: Enter password
-    cy.get("#password").type("learning")
+    // Step 3: Enter password (from fixture)
+    cy.get("#password").type(this.data.password)
 
     // Step 4: Click the Sign In button
     cy.contains("Sign In").click()
@@ -31,7 +39,6 @@ describe('End to End e-commerceTest', () => {
     cy.get('app-card')
       .filter(`:contains("${productName}")`)
       .then($element => {
-        
         // Step 8: Inside the matched product card, find and click the "Add" button
         cy.wrap($element).contains('button', 'Add').click()
       })
