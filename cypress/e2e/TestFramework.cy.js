@@ -18,17 +18,10 @@ describe('End to End e-commerceTest', function () {
     const productName = this.data.productName
 
     // Step 1: Visit the login page
-    cy.visit("https://rahulshettyacademy.com/loginpagePractise/#") 
-
-    // Step 2: Enter username (from fixture)
-    cy.get("#username").type(this.data.username)
-
-    // Step 3: Enter password (from fixture)
-    cy.get("#password").type(this.data.password)
-
-    // Step 4: Click the Sign In button
-    cy.contains("Sign In").click()
-
+   
+    const homepage = new HomePage()
+    homepage.goTo("https://rahulshettyacademy.com/loginpagePractise/#")
+    homepage.login(this.data.username, this.data.password)
     // Step 5: Verify successful login by checking "Shop Name" is visible
     cy.contains("Shop Name").should('be.visible')
 
