@@ -2,7 +2,7 @@
 
 describe('Test Suite', () => {
   it('Test Case', () => {
-  cy.visit("https://rahulshettyacademy.com/seleniumPractise/#/") 
+  cy.visit(Cypress.env('url')+"/AutomationPractice/") 
   
   });
 })
